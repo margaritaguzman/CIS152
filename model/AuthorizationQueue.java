@@ -23,10 +23,15 @@ public class AuthorizationQueue {
 		return queue.poll(); // Retrieves and removes the highest-priority request from the queue
 	}
 
-	// Optional: Display the current authorization requests in the queue
-	public void displayRequests() {
-		for (AuthorizationRequest request : queue) {
-			request.displayAuthorizationDetails(); // Shows details of each request
-		}
+	// Display the current authorization requests in the queue
+	public String displayRequests() {
+		if (queue.isEmpty()) {
+	        return "No requests in the queue.";
+	    }
+	    StringBuilder builder = new StringBuilder("Authorization Queue:\n");
+	    for (AuthorizationRequest request : queue) {
+	        builder.append(request.toString()).append("\n");
+	    }
+	    return builder.toString();
 	}
 }

@@ -5,21 +5,25 @@ package model;
  * date and treatment type.
  * 
  * @author Margarita Guzman
- * @version 1.0
- * @since 2024-11-06
+ * @version 1.2
+ * @since 2024-11-18
  */
 public class Admission {
-	private Patient patient; // Composition: An Admission has a Patient
+	private Patient patient;
 	private String admissionDate;
 	private String treatmentType;
-	private String admissionStatus;
+	private Status status;
+
+	public enum Status {
+		PENDING, APPROVED
+	}
 
 	// Constructor
 	public Admission(Patient patient, String admissionDate, String treatmentType) {
 		this.patient = patient; // Store the patient object
 		this.admissionDate = admissionDate;
 		this.treatmentType = treatmentType;
-		this.admissionStatus = "Pending"; // Default status
+		this.status = Status.PENDING; // Default status
 	}
 
 	// Getters and Setters
@@ -47,20 +51,20 @@ public class Admission {
 		this.treatmentType = treatmentType;
 	}
 
-	public String getAdmissionStatus() {
-		return admissionStatus;
+	public Status getStatus() {
+		return status;
 	}
 
-	public void setAdmissionStatus(String admissionStatus) {
-		this.admissionStatus = admissionStatus;
+	public void setStatus(Status status) {
+		this.status = status;
 	}
 
 	// Display method for Admission details
 	public void displayAdmissionDetails() {
 		System.out.println("Admission Date: " + admissionDate);
 		System.out.println("Treatment Type: " + treatmentType);
-		System.out.println("Admission Status: " + admissionStatus);
-		patient.displayPatientDetails(); // Display patient details as part of admission
+		System.out.println("Admission Status: " + status);
+		patient.displayPatientDetails();
 	}
 
 }
