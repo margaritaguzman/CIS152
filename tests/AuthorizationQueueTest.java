@@ -41,7 +41,7 @@ public class AuthorizationQueueTest {
 		AuthorizationRequest request1 = new AuthorizationRequest(patient1, 1);
 		queue.addRequest(request1);
 
-		// In a real test, we would mock or capture the output of displayRequests
-		queue.displayRequests(); // Just for manual check of output
+		
+		queue.displayRequests();
 	}
 }

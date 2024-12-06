@@ -21,10 +21,37 @@ public class BST {
 		}
 	}
 
-	// Insert an Admission into the BST
-	public void insert(Admission admission) {
-		root = insertRec(root, admission);
+	// Search for a patient ID in the BST
+	public boolean search(String patientId) {
+		return searchRec(root, patientId) != null;
 	}
+	
+
+	private Node searchRec(Node root, String patientId) {
+		if (root == null) {
+			return null;
+		}
+
+		if (root.admission.getPatient().getPatientId().equals(patientId)) {
+			return root; // Found the patient ID
+		}
+
+		if (patientId.compareTo(root.admission.getPatient().getPatientId()) < 0) {
+			return searchRec(root.left, patientId);
+		} else {
+			return searchRec(root.right, patientId);
+		}
+	}
+
+	// Insert an Admission into the BST
+	public boolean insert(Admission admission) {
+		if (search(admission.getPatient().getPatientId())) {
+            return false; // Prevent insertion if patient ID already exists
+        }
+
+        root = insertRec(root, admission);
+        return true;
+    }
 
 	private Node insertRec(Node root, Admission admission) {
 		if (root == null) {
@@ -32,7 +59,6 @@ public class BST {
 			return root;
 		}
 
-		// Assume admissions are ordered by the patient's ID for simplicity
 		if (admission.getPatient().getPatientId().compareTo(root.admission.getPatient().getPatientId()) < 0) {
 			root.left = insertRec(root.left, admission);
 		} else if (admission.getPatient().getPatientId().compareTo(root.admission.getPatient().getPatientId()) > 0) {

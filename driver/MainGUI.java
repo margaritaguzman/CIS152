@@ -8,7 +8,6 @@ import model.AuthorizationRequest;
 import model.BST;
 import model.Patient;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -70,7 +69,7 @@ public class MainGUI extends JFrame {
 		treatmentTypeComboBox = new JComboBox<>(
 				new String[] { "Emergency Care", "Trauma", "Cardiac", "Mental Health" });
 		priorityComboBox = new JComboBox<>(new String[] { "High (1)", "Medium (2)", "Low (3)" });
-		
+
 		submitButton = new JButton("Submit Admission");
 		displayQueueButton = new JButton("View Authorization Queue");
 		processRequestButton = new JButton("Process Next Request");
@@ -138,7 +137,7 @@ public class MainGUI extends JFrame {
 		// Get user input
 		String patientId = patientIdField.getText();
 		String patientName = patientNameField.getText();
-		String patientDOB =  patientDOBField.getText();
+		String patientDOB = patientDOBField.getText();
 		String admissionDate = admissionDateField.getText();
 		String treatmentType = (String) treatmentTypeComboBox.getSelectedItem();
 		int priority = priorityComboBox.getSelectedIndex() + 1;
@@ -148,38 +147,50 @@ public class MainGUI extends JFrame {
 			resultTextArea.setText("Please fill in all fields.");
 			return;
 		}
-		
+
 		if (!patientDOB.matches("\\d{2}/\\d{2}/\\d{4}")) {
-		    resultTextArea.setText("Invalid Date of Birth format. Use MM/dd/yyyy.");
-		    return;
+			resultTextArea.setText("Invalid Date of Birth format. Use MM/dd/yyyy.");
+			return;
 		}
 
-		// Create Patient, Admission, and AuthorizationRequest objects
-		Patient patient = new Patient(patientId, patientName, patientDOB);
-		Admission admission = new Admission(patient, admissionDate, treatmentType);
-		AuthorizationRequest request = new AuthorizationRequest(patient, priority);
+		if (!admissionDate.matches("\\d{2}/\\d{2}/\\d{4}")) {
+			resultTextArea.setText("Invalid Date of admission format. Use MM/dd/yyyy.");
+			return;
+		}
 
-		// Add admission and add to queue
-		bst.insert(admission);
-		authorizationQueue.addRequest(request);
+		try {
+			// Create Patient, Admission, and AuthorizationRequest objects
+			Patient patient = new Patient(patientId, patientName, patientDOB);
+			Admission admission = new Admission(patient, admissionDate, treatmentType);
 
-		// Display success message
-		resultTextArea.setText("Admission for " + patientName + " submitted with priority " + priority + ".");
+			if (bst.insert(admission)) {
+				AuthorizationRequest request = new AuthorizationRequest(patient, priority);
+				authorizationQueue.addRequest(request);
+				resultTextArea.setText(
+						"Admission submitted for: " + patientName + " submitted with priority " + priority + ".");
+			} else {
+				resultTextArea.setText("Failed to insert admission. Duplicate patient");
+			}
+		} catch (Exception ex) {
+			resultTextArea.setText("Error: " + ex.getMessage());
+		}
+
 	}
 
 	private void displayAuthorizationQueue() {
 		String queueDisplay = authorizationQueue.displayRequests();
-	    resultTextArea.setText(queueDisplay);
+		resultTextArea.setText(queueDisplay);
 	}
 
 	private void processNextAuthorizationRequest() {
 		AuthorizationRequest request = authorizationQueue.processRequest();
 		if (request != null) {
-			request.approve();  // Simulate approval
-	        resultTextArea.setText("Processed request for " + request.getPatient().getPatientName() + " with status: " + request.getStatus());
-	    } else {
-	        resultTextArea.setText("No requests to process.");
-	    }
+			request.approve(); // Simulate approval
+			resultTextArea.setText("Processed request for " + request.getPatient().getPatientName() + " with status: "
+					+ request.getStatus());
+		} else {
+			resultTextArea.setText("No requests to process.");
+		}
 	}
 
 	public static void main(String[] args) {
