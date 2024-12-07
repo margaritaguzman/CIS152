@@ -1,8 +1,7 @@
 package model;
 
 /**
- * Represents each admission and contains details about the admission, like the
- * date and treatment type.
+ * Represents each authorization request and compares based on priority.
  * 
  * @author Margarita Guzman
  * @version 1.2
